@@ -1,12 +1,12 @@
 <template>
   <div id="app">
-    <button v-on:click="loadData">LoadData</button>
     <ejs-grid
       ref="gridObj"
-      height="150px"
+      height="250px"
       :enableInfiniteScrolling="true"
       :pageSettings="pageSettings"
-      :load="load"
+      :dataSource="records"
+      :dataStateChange="dataStateChange"
     >
       <e-columns>
         <e-column type="checkbox" width="80"></e-column>
@@ -48,16 +48,39 @@ export default {
   data() {
     return {
       data: data,
+      recs: {
+          result: [],
+          count: 0,
+      },
       pageSettings: {
         pageSize: 8,
       },
     };
   },
+  computed: {
+    records: {
+      get() {
+        return this.recs;
+      },
+	}
+  },
   methods: {
-    load: function () {},
+    load: function () {
+      axios.get('data.json').then(({data}) => {
+        window.console.log(data);
+        this.recs = data;
+      });
+    },
     loadData() {
-      debugger;
+      // debugger;
       this.$refs.gridObj.dataSource = this.data;
+    },
+    dataStateChange() { //state
+      // this.$store.dispatch(FETCH_ORDERS, state);
+      axios.get('data.json').then(({data}) => {
+        window.console.log(data);
+        this.recs = data;
+      });
     },
   },
   provide: {
